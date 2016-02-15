@@ -1,0 +1,115 @@
+buildscript {
+    repositories {
+        jcenter()
+        maven {
+            name = "forge"
+            url = "http://files.minecraftforge.net/maven"
+        }
+    }
+    dependencies {
+        classpath 'net.minecraftforge.gradle:ForgeGradle:2.1-SNAPSHOT'
+    }
+}
+
+apply plugin: 'net.minecraftforge.gradle.forge'
+apply plugin: 'maven-publish'
+
+ext.buildnumber = 0
+if (System.getenv('BUILD_NUMBER') != null)
+    project.buildnumber = System.getenv('BUILD_NUMBER')
+else {
+    try {
+        ext.buildnumber += "_" + "git rev-parse --abbrev-ref HEAD".execute().text.trim();
+        ext.buildnumber += "_" + "git rev-parse --short HEAD".execute().text.trim();
+    } catch (all) {}
+    logger.lifecycle "No build number detected, setting to ${ext.buildnumber}"
+}
+
+ext.mod_version = "1.0.0"
+ext.minecraft_version = "1.8.9"
+version = "${minecraft_version}-${mod_version}-${buildnumber}"
+group= "info.loenwind.mvesrf" // http://maven.apache.org/guides/mini/guide-naming-conventions.html
+archivesBaseName = "mvesrf"
+
+sourceCompatibility = 1.7
+targetCompatibility = 1.7
+
+minecraft {
+    version = "1.8.9-11.15.1.1737"
+    runDir = "run"
+    mappings = "stable_20"
+}
+
+repositories {
+    mavenCentral()
+    maven { url = "http://maven.tterrag.com" }
+    mavenLocal()
+}
+
+dependencies {
+    compile "info.loenwind.mves:MVES:1.8.9-1.0.0-+:dev"
+}
+
+processResources {
+    inputs.property "version", project.version
+    inputs.property "mcversion", project.minecraft.version
+
+    // just throwing it here seems a bit "hacky", but hey, it works. 
+    String contents = new File('src/main/java/info/loenwind/mvesrf/MvesRfMod.java').getText('UTF-8') 
+    contents = contents.replaceAll('VERSION = ".*"', 'VERSION = "' + project.ext.mod_version + '"')
+    new File('src/main/java/info/loenwind/mvesrf/MvesRfMod.java').write(contents, 'UTF-8')
+
+    from(sourceSets.main.resources.srcDirs) {
+        include 'mcmod.info'
+        expand 'version':project.ext.mod_version, 'mcversion':project.minecraft.version
+    }
+        
+    from(sourceSets.main.resources.srcDirs) {
+        exclude 'mcmod.info'
+    }
+}
+
+jar {
+    destinationDir = file './dist'
+    includeEmptyDirs = false
+    duplicatesStrategy = DuplicatesStrategy.EXCLUDE
+}
+jar.doLast { task ->
+    ant.checksum file: task.archivePath
+}
+
+sourceJar {
+    destinationDir = file './dist'
+}
+sourceJar.doLast { task ->
+    ant.checksum file: task.archivePath
+}
+
+task deobfJar(type: Jar) {
+    from sourceSets.main.output
+    classifier = 'dev'
+    destinationDir = file './dist'
+}
+deobfJar.doLast { task ->
+    ant.checksum file: task.archivePath
+}
+
+build.dependsOn sourceJar, deobfJar
+
+publishing {
+    tasks.publish.dependsOn 'build'
+    publications {
+        mavenJava(MavenPublication) {
+            from components.java
+
+            artifact sourceJar
+            artifact deobfJar
+        }
+    }
+
+    repositories {
+        if (project.hasProperty('mavendir')) {
+            maven { url mavendir }
+        }
+    }
+}

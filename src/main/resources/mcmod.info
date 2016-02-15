@@ -1,0 +1,16 @@
+[
+{
+  "modid": "mvesrf",
+  "name": "MVES-RF Compatibility Layer",
+  "description": "Provides campatibility between MVES and RF energy systems",
+  "version": "${version}",
+  "mcversion": "${mcversion}",
+  "url": "",
+  "updateUrl": "",
+  "authorList": ["Henry Loenwind"],
+  "credits": "",
+  "logoFile": "",
+  "screenshots": [],
+  "dependencies": []
+}
+]
