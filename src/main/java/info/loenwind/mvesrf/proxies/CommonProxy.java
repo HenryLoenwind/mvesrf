@@ -1,31 +1,18 @@
 package info.loenwind.mvesrf.proxies;
 
-import info.loenwind.mves.api.IEnergyAcceptor;
-import info.loenwind.mves.api.IEnergyHandler;
-import info.loenwind.mves.api.IEnergySupplier;
-import info.loenwind.mves.api.IEnergyTransporter;
-import info.loenwind.mves.capability.MvesDefaultImpl;
-import info.loenwind.mves.capability.MvesStorage;
-import info.loenwind.mves.config.Config;
-import info.loenwind.mves.demo.furnace.FurnaceCapabilityAttacher;
-import info.loenwind.mves.demo.wire.BlockMvesWire;
-import net.minecraft.init.Items;
-import net.minecraft.item.EnumDyeColor;
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemStack;
+import info.loenwind.mvesrf.config.Config;
+import info.loenwind.mvesrf.rfhandler.RfCapabilityAttacher;
 import net.minecraftforge.common.MinecraftForge;
-import net.minecraftforge.common.capabilities.CapabilityManager;
 import net.minecraftforge.fml.common.event.FMLInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPostInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
-import net.minecraftforge.fml.common.registry.GameRegistry;
 
 public class CommonProxy {
 
   public void init(FMLPreInitializationEvent e) {
-//    if (Config.enableFurnaceHooking.getBoolean()) {
-//      MinecraftForge.EVENT_BUS.register(new FurnaceCapabilityAttacher());
-//    }
+    if (Config.enableRfHooking.getBoolean()) {
+      MinecraftForge.EVENT_BUS.register(new RfCapabilityAttacher());
+    }
 //    if (Config.enableRainbowWire.getBoolean()) {
 //      BlockMvesWire.create();
 //    }

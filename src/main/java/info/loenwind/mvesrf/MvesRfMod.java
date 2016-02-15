@@ -21,9 +21,8 @@ import net.minecraftforge.fml.common.network.simpleimpl.SimpleNetworkWrapper;
 
 import org.apache.logging.log4j.Logger;
 
-@Mod(modid = MvesRfMod.MODID, version = MvesRfMod.VERSION, guiFactory = "info.loenwind.mvesrf.config.gui.ConfigFactory")
-public class MvesRfMod
-{
+@Mod(modid = MvesRfMod.MODID, version = MvesRfMod.VERSION, guiFactory = "info.loenwind.mvesrf.config.gui.ConfigFactory", dependencies = "required-after:mves")
+public class MvesRfMod {
     public static final String MODID = "mvesrf";
     public static final String VERSION = "1.0.0";
 

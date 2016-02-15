@@ -1,7 +1,6 @@
 package info.loenwind.mvesrf.config;
 
 import info.loenwind.mvesrf.MvesRfMod;
-import info.loenwind.mvesrf.config.Section;
 import io.netty.buffer.ByteBuf;
 
 import java.nio.charset.Charset;
@@ -16,7 +15,7 @@ public enum Config {
   // section, defaultValue, description, requiresWorldRestart,
   // requiresGameRestart
 
-  enableFurnaceHooking(Section.RF, true, "Enable vanilla furnaces to produce and consume power", true, true),
+  enableRfHooking(Section.RF, true, "Enable RF blocks to provide and consume MVES power", true, true),
   ;
 
   /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
