@@ -24,6 +24,9 @@ else {
     } catch (all) {}
     logger.lifecycle "No build number detected, setting to ${ext.buildnumber}"
 }
+ext.mvef_req = "1.0.0-+"
+if (System.getenv('MVES') != null)
+    ext.mvef_req = System.getenv('MVES')
 
 ext.mod_version = "1.0.0"
 ext.minecraft_version = "1.8.9"
@@ -47,7 +50,7 @@ repositories {
 }
 
 dependencies {
-    compile "info.loenwind.mves:MVES:1.8.9-1.0.0-+:dev"
+    compile "info.loenwind.mves:MVES:1.8.9-${project.ext.mvef_req}:dev"
 }
 
 processResources {

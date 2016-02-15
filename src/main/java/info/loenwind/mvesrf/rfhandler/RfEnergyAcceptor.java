@@ -3,6 +3,7 @@ package info.loenwind.mvesrf.rfhandler;
 import info.loenwind.mves.api.IEnergyAcceptor;
 import info.loenwind.mves.api.IEnergyOffer;
 import info.loenwind.mves.api.IEnergyStack;
+import info.loenwind.mvesrf.MvesRfMod;
 
 import java.util.Iterator;
 
@@ -28,11 +29,19 @@ public class RfEnergyAcceptor<TE extends TileEntity & IEnergyReceiver> implement
     while (used < maxEnergy && iterator.hasNext()) {
       IEnergyStack next = iterator.next();
       if (next != null && next.getSource() != te && next.getStackSize() >= 0) {
-        int extractEnergy = next.extractEnergy(Math.min(maxEnergy - used, next.getStackSize()));
-        if (extractEnergy == 0) {
-          return used;
+        int max = Math.min(maxEnergy - used, next.getStackSize());
+        max = Math.min(max, te.receiveEnergy(facing, max, true));
+        if (max > 0) {
+          int extractEnergy = next.extractEnergy(max);
+          if (extractEnergy > 0) {
+            int receiveEnergy = te.receiveEnergy(facing, extractEnergy, false);
+            if (receiveEnergy != extractEnergy) {
+              MvesRfMod.LOG.warn("Block " + te + " at " + te.getPos() + " said it would accept " + extractEnergy + " RF but only took " + receiveEnergy
+                  + ". The remainder was lost.");
+            }
+            used += Math.max(extractEnergy, receiveEnergy);
+          }
         }
-        used += extractEnergy;
       }
     }
     return used;
