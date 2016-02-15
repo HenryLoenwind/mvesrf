@@ -18,7 +18,7 @@ public class RfReceiverCapabilityProvider<TE extends TileEntity & IEnergyReceive
 
   @Override
   public boolean hasCapability(Capability<?> capability, EnumFacing facing) {
-    return te.hasWorldObj() && !te.getWorld().isRemote && capability == MvesRfMod.CAP_EnergyAcceptor;
+    return te.hasWorldObj() && !te.getWorld().isRemote && capability == MvesRfMod.CAP_EnergyAcceptor && te.canConnectEnergy(facing);
   }
 
   @Override
